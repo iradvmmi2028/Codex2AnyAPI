@@ -1,0 +1,2 @@
+# Local tool state (packets, results, journal, locks) — never commit.
+.sol-luna-state/

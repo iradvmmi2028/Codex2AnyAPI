@@ -1,0 +1,32 @@
+{
+  "name": "local-repo",
+  "interface": {
+    "displayName": "Local plugins (this checkout)"
+  },
+  "plugins": [
+    {
+      "name": "sol-luna-command-center",
+      "source": {
+        "source": "local",
+        "path": "./plugins/sol-luna-command-center"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "astra-luna-command-center",
+      "source": {
+        "source": "local",
+        "path": "./plugins/astra-luna-command-center"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

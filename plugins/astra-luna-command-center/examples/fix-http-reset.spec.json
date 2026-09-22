@@ -1,0 +1,22 @@
+{
+  "goal": "Fix intermittent HTTP 502 resets behind the idle load balancer",
+  "symptom": [
+    "502 resets after ~60s of idle connections",
+    "upstream logs show connection reset by peer"
+  ],
+  "root_cause": [
+    "backend keep-alive pool holds connections open past the LB idle timeout"
+  ],
+  "scope": ["src/db/pool.go", "tests/pool_test.go"],
+  "inputs": ["LB idle timeout is 60s", "pool keep-alive currently unbounded"],
+  "acceptance": [
+    "pool idle connections are closed before the LB idle timeout",
+    "make test passes including the new pool test"
+  ],
+  "constraints": ["no new dependencies", "do not change the public API"],
+  "files": ["src/db/pool.go", "tests/pool_test.go"],
+  "symptom_confidence": "high",
+  "evidence": [
+    "upstream stack traces point at reads on pooled sockets after 60s idle"
+  ]
+}

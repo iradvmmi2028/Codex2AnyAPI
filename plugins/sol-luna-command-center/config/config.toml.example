@@ -1,0 +1,13 @@
+# sol-luna-command-center suggested harness configuration.
+# Merge the commented lines into ~/.codex/config.toml yourself, or let `doctor`
+# report what is missing. This plugin NEVER edits config.toml automatically.
+
+# Let the model ask clarifying questions outside plan mode (article: "2个设置").
+# Recommended for GPT-5.6 Sol as command center.
+# [features]
+# default_mode_request_user_input = true
+
+# Conservative parallel ceiling for worker threads. Keep an existing user-set
+# value; 3 is the recommended starting point. Never exceed account/runtime limits.
+# [agents]
+# max_concurrent_threads_per_session = 3

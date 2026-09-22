@@ -1,0 +1,71 @@
+{
+  "_comment": "astra-Diy settings field template. Copy values via diy-set / diy-settings; this file is documentation, not live config.",
+  "fields": [
+    {
+      "key": "base_url",
+      "label": "Base URL",
+      "type": "text",
+      "placeholder": "http://127.0.0.1:11434/v1",
+      "required": true,
+      "help": "OpenAI-compatible API root. /v1 is appended when missing."
+    },
+    {
+      "key": "api_key",
+      "label": "API Key",
+      "type": "password",
+      "placeholder": "sk-...",
+      "required": true,
+      "help": "Bearer token. Stored in diy.json; ASTRA_DIY_API_KEY overrides."
+    },
+    {
+      "key": "model",
+      "label": "Model",
+      "type": "text",
+      "placeholder": "qwen2.5-coder:32b",
+      "required": true,
+      "help": "Custom model id that replaces gpt-5.6-luna as the packet worker."
+    },
+    {
+      "key": "enabled",
+      "label": "Enable DIY worker",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "key": "replace_luna",
+      "label": "Replace gpt-5.6-luna",
+      "type": "bool",
+      "default": true,
+      "help": "When true, dispatch defaults to diy-openai. Astra remains the tower."
+    },
+    {
+      "key": "temperature",
+      "label": "Temperature",
+      "type": "number",
+      "default": 0.2
+    },
+    {
+      "key": "timeout_sec",
+      "label": "Timeout seconds",
+      "type": "number",
+      "default": 900
+    }
+  ],
+  "live_config_path": "<state_dir>/diy.json",
+  "example_live_config": {
+    "enabled": true,
+    "replace_luna": true,
+    "base_url": "http://127.0.0.1:11434/v1",
+    "api_key": "sk-replace-me",
+    "model": "qwen2.5-coder:32b",
+    "temperature": 0.2,
+    "timeout_sec": 900
+  },
+  "cli": {
+    "windows": "powershell -File scripts/astra-luna.ps1 diy-set -BaseUrl \"http://127.0.0.1:11434/v1\" -ApiKey \"sk-...\" -Model \"qwen2.5-coder:32b\" -Enabled true -ReplaceLuna true",
+    "posix": "bash scripts/astra-luna.sh diy-set --base-url \"http://127.0.0.1:11434/v1\" --api-key \"sk-...\" --model \"qwen2.5-coder:32b\" --enabled true --replace-luna true",
+    "test": "powershell -File scripts/astra-luna.ps1 diy-test",
+    "models": "powershell -File scripts/astra-luna.ps1 diy-models",
+    "gui": "powershell -File scripts/astra-luna.ps1 diy-settings"
+  }
+}

@@ -1,0 +1,31 @@
+# 运行状态（packet / 结果 / journal / 浏览器登录 profile / DIY 密钥）— 绝不入库
+.astra-luna-state/
+.sol-luna-state/
+**/diy.json
+
+# 打包产物与备份
+*.zip
+*.rar
+.zip-backup-*/
+compare
+
+# 本地打包 / 排查脚本
+.pack_astra.ps1
+.pack_rebuild.ps1
+.astra-fix-config.ps1
+.astra-verify-install.ps1
+
+# 研究草稿与本机会话
+_research/
+.spidercode/
+
+# Python / Node
+__pycache__/
+*.py[cod]
+node_modules/
+
+# 日志与系统文件
+*.log
+*.old
+Thumbs.db
+.DS_Store

@@ -1,0 +1,40 @@
+{
+  "name": "astra-luna-command-center",
+  "version": "0.2.0",
+  "description": "GPT-6 Astra command center: pack bounded execution packets, dispatch to gpt-5.6-luna workers or an OpenAI-compatible DIY custom model (astra-Diy), ingest hash-bound results, and review/summarize as Astra.",
+  "author": {
+    "name": "Astra-Luna Command Center"
+  },
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "agent",
+    "gpt-6-astra",
+    "astra",
+    "luna-max",
+    "gpt-5.6",
+    "astra-diy",
+    "openai-compatible",
+    "custom-model",
+    "execution-packet",
+    "command-center"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Astra + Luna Command Center",
+    "shortDescription": "Plan with GPT-6 Astra; execute via gpt-5.6-luna or a custom OpenAI-compatible DIY worker (/astra-Diy).",
+    "longDescription": "Turns GPT-6 Astra (this Codex session) into a two-tier command center. Astra plans and reviews; workers execute bounded packets (local astra_* agents on gpt-5.6-luna, or the astra-Diy OpenAI-compatible custom model). DIY setup: Base URL + API Key + Model, with connection test and model list fetch; when enabled it replaces only the worker model, never Astra's control-tower role. Settings UI: assets/diy-settings/index.html. Commands: diy-set / diy-show / diy-test / diy-models / diy-settings. Skill: astra-diy. Packets move new -> done -> ingested -> summarized with SHA-256 binding and no silent model/transport fallback.",
+    "developerName": "Astra-Luna Command Center",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Run /astra-Diy to configure my OpenAI-compatible custom worker (base URL, API key, model).",
+      "Run the astra-luna doctor self-check and report DIY vs luna worker route.",
+      "Create an execution packet from a spec JSON and dispatch it to the worker.",
+      "Show the status of all astra-luna execution packets."
+    ]
+  }
+}

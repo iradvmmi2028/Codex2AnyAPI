@@ -1,0 +1,4 @@
+# Local tool state (packets, results, journal, locks, DIY credentials) — never commit.
+.astra-luna-state/
+**/diy.json
+

@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>astra-Diy · OpenAI 兼容模型设置</title>
+  <link rel="stylesheet" href="css/diy-settings.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="brand">
+        <div class="logo">A</div>
+        <div>
+          <h1>Astra + Luna Command Center</h1>
+          <p class="sub">插件设置 · astra-Diy 自定义 OpenAI 兼容 Worker</p>
+        </div>
+      </div>
+      <div class="badges">
+        <span class="badge" id="badgeVersion">v0.2.0</span>
+        <span class="badge muted" id="badgeRoute">worker: gpt-5.6-luna</span>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <div class="card-head">
+          <h2>接口配置</h2>
+          <p>仅替换 worker 执行模型；GPT-6 Astra 仍是指挥塔，负责派发与审核。</p>
+        </div>
+
+        <form id="diyForm" autocomplete="off">
+          <label class="field">
+            <span class="label">Provider</span>
+            <select id="provider">
+              <option value="openai-compatible">OpenAI 兼容（/v1/chat/completions）</option>
+              <option value="wechat-chatapi">微信 OpenAI 网关（SpiderCode 同款，无需 APPID）</option>
+            </select>
+            <small>与 SpiderCode 相同：Base URL 填 https://chatapi.weixin.qq.com/openai/v1（或完整 .../chat/completions），API Key 用你的 Token，Model 填 Deepseek-v4-flash。无需 APPID/EncodingAESKey。</small>
+          </label>
+
+          <label class="field">
+            <span class="label">Base URL <em>*</em></span>
+            <input id="baseUrl" name="baseUrl" type="url" placeholder="https://api.example.com/v1 或 https://openaiapi.weixin.qq.com" required />
+            <small>OpenAI 兼容接口根地址；微信平台填 host 即可（可带 /openai/v1，会自动归一）。</small>
+          </label>
+
+          <label class="field">
+            <span class="label">API Key / Token <em>*</em></span>
+            <div class="input-row">
+              <input id="apiKey" name="apiKey" type="password" placeholder="sk-... 或微信平台 Token" autocomplete="off" />
+              <button type="button" class="btn ghost" id="btnToggleKey" title="显示/隐藏">显示</button>
+            </div>
+            <small>OpenAI：Bearer Key；微信对话平台：开放 API 的 Token（与 APPID 配对签名）。</small>
+          </label>
+
+          <div class="row-2 wechat-only" id="wechatFields" hidden>
+            <label class="field">
+              <span class="label">微信 APPID</span>
+              <input id="appid" type="text" placeholder="chatbot.weixin.qq.com 申请的 APPID" />
+            </label>
+            <label class="field">
+              <span class="label">EncodingAESKey</span>
+              <input id="aesKey" type="password" placeholder="43 位 EncodingAESKey" />
+            </label>
+            <label class="field">
+              <span class="label">env</span>
+              <input id="wxEnv" type="text" placeholder="online" value="online" />
+            </label>
+          </div>
+
+          <label class="field">
+            <span class="label">Model <em>*</em></span>
+            <div class="input-row">
+              <select id="modelSelect" aria-label="可用模型下拉列表">
+                <option value="">— 请先填写 Base URL 与 API Key，将自动获取可用模型 —</option>
+              </select>
+              <button type="button" class="btn ghost" id="btnRefreshModels" title="重新从 API 拉取模型列表">刷新模型</button>
+            </div>
+            <div class="input-row model-custom-row" id="modelCustomRow" hidden>
+              <input id="model" name="model" type="text" placeholder="手动输入自定义 model id" />
+            </div>
+            <small id="modelHint">填入 Base URL + API Key 后，本页会自动请求 <code>GET /v1/models</code>，把该密钥可用的模型放进下拉列表供选择。</small>
+          </label>
+
+          <div class="row-2">
+            <label class="field">
+              <span class="label">Temperature</span>
+              <input id="temperature" type="number" step="0.1" min="0" max="2" value="0.2" />
+            </label>
+            <label class="field">
+              <span class="label">Timeout（秒）</span>
+              <input id="timeoutSec" type="number" min="1" max="86400" value="900" />
+            </label>
+          </div>
+
+          <div class="checks">
+            <label class="check">
+              <input id="enabled" type="checkbox" checked />
+              <span>启用 DIY worker（astra-Diy）</span>
+            </label>
+            <label class="check">
+              <input id="replaceLuna" type="checkbox" checked />
+              <span>替换 gpt-5.6-luna（默认 dispatch 走 diy-openai）</span>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn primary" id="btnSave">保存配置</button>
+            <button type="button" class="btn" id="btnTest">测试连接</button>
+            <button type="button" class="btn" id="btnRefreshModels">获取模型并填充下拉框</button>
+            <button type="button" class="btn warn" id="btnClear">清除/禁用</button>
+            <button type="button" class="btn ghost" id="btnCli">生成 CLI 命令</button>
+            <button type="button" class="btn ghost" id="btnExport">导出 diy.json</button>
+            <button type="button" class="btn ghost" id="btnLoad">从 diy.json 导入</button>
+            <input type="file" id="fileImport" accept="application/json,.json" hidden />
+          </div>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2>状态与结果</h2>
+          <p id="statusLine">尚未保存配置。填写 Base URL / API Key / Model 后点「保存配置」。</p>
+        </div>
+
+        <div class="status-grid">
+          <div class="stat">
+            <span class="k">启用</span>
+            <span class="v" id="statEnabled">否</span>
+          </div>
+          <div class="stat">
+            <span class="k">就绪</span>
+            <span class="v" id="statReady">否</span>
+          </div>
+          <div class="stat">
+            <span class="k">替换 Luna</span>
+            <span class="v" id="statReplace">是（默认）</span>
+          </div>
+          <div class="stat">
+            <span class="k">当前路由</span>
+            <span class="v" id="statRoute">local-worker / gpt-5.6-luna</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">配置预览（写入 diy.json）</div>
+          <pre id="jsonPreview" class="code">{}</pre>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">CLI / 插件路径</div>
+          <pre id="cliPreview" class="code"># 填写并保存后生成 diy-set 命令</pre>
+          <div class="actions tight">
+            <button type="button" class="btn ghost" id="btnCopyCli">复制 CLI</button>
+            <button type="button" class="btn ghost" id="btnCopyJson">复制 JSON</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">测试输出</div>
+          <pre id="testOutput" class="code">（点击「测试连接」或「获取模型」）</pre>
+        </div>
+
+        <div class="models" id="modelList" hidden>
+          <div class="panel-title">可用模型</div>
+          <div class="chips" id="modelChips"></div>
+        </div>
+      </section>
+    </main>
+
+    <section class="card howto">
+      <h2>如何让配置在 Codex 插件里生效</h2>
+      <ol>
+        <li>本页保存后点 <strong>导出 diy.json</strong>，覆盖到插件状态目录；或复制 CLI 在 PowerShell 执行。</li>
+        <li>推荐路径：<code>C:\Users\Administrator\.codex\skills\astra-command-center\.astra-luna-state\diy.json</code></li>
+        <li>Windows 文本框对话框：<code>powershell -File ...\astra-luna.ps1 diy-settings</code></li>
+        <li>连通验证：<code>diy-test</code> · 模型列表：<code>diy-models</code></li>
+        <li>会话内命令：重启 Codex 后输入 <code>/astra-Diy</code></li>
+      </ol>
+      <p class="note">说明：Codex「插件管理」界面本身不渲染本地插件的自定义表单。本页是插件的图形设置入口，可浏览器打开，也可挂到插件 assets 供预览；真正写入磁盘请用「导出 diy.json」或 CLI。</p>
+    </section>
+
+    <footer class="foot">
+      astra-luna-command-center · astra-Diy settings UI · OpenAI API compatible only
+    </footer>
+  </div>
+
+  <script src="js/diy-settings.js"></script>
+</body>
+</html>
+

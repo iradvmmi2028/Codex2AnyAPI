@@ -1,0 +1,36 @@
+{
+  "name": "sol-luna-command-center",
+  "version": "0.1.0",
+  "description": "GPT-5.6 Sol command center: build bounded execution packets, dispatch to ChatGPT Web GPT-5.6 Luna Max or local luna_worker, ingest results, and summarize.",
+  "author": {
+    "name": "Luna-Max Command Center"
+  },
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "agent",
+    "chatgpt",
+    "gpt-5.6",
+    "luna-max",
+    "execution-packet",
+    "sol",
+    "command-center"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Sol + Luna Max Command Center",
+    "shortDescription": "Plan with Sol, execute bounded packets via ChatGPT Web Luna Max or a local luna_worker.",
+    "longDescription": "Turns Sol (this Codex session) into the command center of a two-agent loop: it packs a bounded, hash-verified execution packet from a spec JSON, hands it to ChatGPT Web GPT-5.6 Luna Max (desktop browser or manual paste) or to the local luna_worker agent via codex exec, then ingests the SHA-256-bound result and records the final summary. Packets follow a one-way state machine (new, done, ingested, summarized) with strict refusal on tampering, out-of-order steps, oversized payloads, and unsupported transports. Includes a doctor self-check, an idempotent init, a per-packet dispatch lock, and full test suites for Windows PowerShell and POSIX shells.",
+    "developerName": "Luna-Max Command Center",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Run the sol-luna doctor self-check and report what is missing.",
+      "Create an execution packet from a spec JSON and dispatch it.",
+      "Show the status of all sol-luna execution packets."
+    ]
+  }
+}
